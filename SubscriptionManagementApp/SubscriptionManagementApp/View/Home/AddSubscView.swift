@@ -10,34 +10,46 @@ import RealmSwift
 
 struct AddSubscView: View {
     
-    @ObservedResults(SubscriptionModel.self) var subscriptionModel
-
-    @Binding var subscName: String
+    var itemToEdit: SubscriptionModel?
     
+    @Binding var subscName: String
     var addSubscription: () -> Void
     
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
-        VStack {
-            Button(action: {
-                addSubscription()
-            }) {
-                Image(systemName: "plus")
+        NavigationView {
+            VStack(spacing: 20) {
+                TextField("サブスクリプション名", text: $subscName)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                
+                Spacer()
             }
-            TextField("name", text: $subscName)
-                .textFieldStyle(.roundedBorder)
-                .onAppear {
-                    if let specificItem = subscriptionModel.first(where: { $0.subscName == subscName }) {
-                        subscName = specificItem.subscName
-                    } else {
-                        subscName = ""
+            .navigationTitle(itemToEdit == nil ? "新規追加" : "編集")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                if let item = itemToEdit {
+                    subscName = item.subscName
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("キャンセル") {
+                        dismiss()
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("保存") {
+                        addSubscription()
+                    }
+                    .disabled(subscName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
         }
-        .padding(.horizontal)
-        .padding(.vertical)
     }
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("サブスクの名前だよ"), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), addSubscription: {})
 }

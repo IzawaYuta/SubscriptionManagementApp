@@ -8,69 +8,84 @@
 import SwiftUI
 import RealmSwift
 
+import SwiftUI
+import RealmSwift
+
 struct HomeView: View {
     
     @ObservedResults(SubscriptionModel.self) var subscriptionModel
     
     @State private var subscName: String = ""
     @State private var showAddSubscView = false
+    @State private var editSubscriptionModel: SubscriptionModel?
     
     var body: some View {
         NavigationStack {
             VStack {
-                //                HStack {
-                //                    TextField("name", text: $subscName)
                 Button(action: {
-                    showAddSubscView.toggle()
+                    self.editSubscriptionModel = nil
+                    self.subscName = ""
+                    self.showAddSubscView = true
                 }) {
                     Image(systemName: "plus")
                 }
-                .sheet(isPresented: $showAddSubscView) {
-                    AddSubscView(
-                        subscName: $subscName,
-                        addSubscription: {
-                            addSubscription()
-                            showAddSubscView = false
-                        })
-                }
-                //                }
                 .padding(.horizontal)
                 
                 List {
-                    ForEach(subscriptionModel, id: \.id) { list in
-                        NavigationLink(
-                            destination: AddSubscView(
-                                subscName: .constant(list.subscName),
-                                addSubscription: {
-                                    addSubscription()
-                                    showAddSubscView = false
-                                }
-                            )
-                        ) {
-                            Text(list.subscName)
+                    ForEach(subscriptionModel) { list in
+                        Button(action: {
+                            self.editSubscriptionModel = list
+//                            self.subscName = list.subscName 
+                            self.showAddSubscView = true
+                        }) {
+                            HStack {
+                                Text(list.subscName)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundColor(.gray.opacity(0.5))
+                            }
                         }
                     }
+                    .onDelete(perform: $subscriptionModel.remove)
                 }
+            }
+            .navigationTitle("サブスクリプション")
+            .sheet(isPresented: $showAddSubscView) {
+                AddSubscView(
+                    itemToEdit: self.editSubscriptionModel,
+                    subscName: self.$subscName,
+                    addSubscription: {
+                        self.addSubscription()
+                        self.showAddSubscView = false
+                    }
+                )
             }
         }
     }
     
     private func addSubscription() {
         let realm = try! Realm()
-        if let existing = subscriptionModel.first(where: { $0.subscName == subscName }) {
-            // 上書き: 既存のsubscNameがあれば更新
+        
+        if let editModel = editSubscriptionModel {
+            guard let thawedModel = editModel.thaw() else { return }
+            
             try! realm.write {
-                existing.subscName = subscName
-            }
-        } else {
-            // 新規作成: なければ新規追加
-            try! realm.write {
-                let model = SubscriptionModel()
-                model.subscName = subscName
-                realm.add(model)
+                thawedModel.subscName = self.subscName
             }
         }
-        subscName = ""
+        else {
+            if !self.subscName.trimmingCharacters(in: .whitespaces).isEmpty {
+                let model = SubscriptionModel()
+                model.subscName = self.subscName
+                try! realm.write {
+                    realm.add(model)
+                }
+            }
+        }
+        self.subscName = ""
+        self.editSubscriptionModel = nil
     }
 }
 
