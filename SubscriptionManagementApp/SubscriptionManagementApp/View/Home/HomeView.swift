@@ -13,31 +13,43 @@ struct HomeView: View {
     @ObservedResults(SubscriptionModel.self) var subscriptionModel
     
     @State private var subscName: String = ""
-    @State var showAddSubscView = false
+    @State private var showAddSubscView = false
     
     var body: some View {
-        VStack {
-            HStack {
-                TextField("name", text: $subscName)
-                Button(action: {
-                    showAddSubscView.toggle()
-                }) {
-                    Image(systemName: "plus")
-                }
-                .sheet(isPresented: $showAddSubscView) {
-                    AddSubscView(
-                        subscName: $subscName,
-                        addSubscription: {
-                            addSubscription()
-                            showAddSubscView = false
-                        })
-                }
-            }
-            .padding(.horizontal)
-            
-            List {
-                ForEach(subscriptionModel, id: \.id) { list in
-                    Text(list.subscName)
+        NavigationStack {
+            VStack {
+//                HStack {
+//                    TextField("name", text: $subscName)
+                    Button(action: {
+                        showAddSubscView.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                    .sheet(isPresented: $showAddSubscView) {
+                        AddSubscView(
+                            subscName: $subscName,
+                            addSubscription: {
+                                addSubscription()
+                                showAddSubscView = false
+                            })
+                    }
+//                }
+                .padding(.horizontal)
+                
+                List {
+                    ForEach(subscriptionModel, id: \.id) { list in
+                        NavigationLink(
+                            destination: AddSubscView(
+                                subscName: .constant(list.subscName),
+                                addSubscription: {
+                                    addSubscription()
+                                    showAddSubscView = false
+                                }
+                            )
+                        ) {
+                            Text(list.subscName)
+                        }
+                    }
                 }
             }
         }

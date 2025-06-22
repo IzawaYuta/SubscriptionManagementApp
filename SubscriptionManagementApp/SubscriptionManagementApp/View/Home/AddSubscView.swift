@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct AddSubscView: View {
     
+    @ObservedResults(SubscriptionModel.self) var subscriptionModel
+
     @Binding var subscName: String
     
     var addSubscription: () -> Void
@@ -22,6 +25,19 @@ struct AddSubscView: View {
             }
             TextField("name", text: $subscName)
                 .textFieldStyle(.roundedBorder)
+                .onAppear {
+//                    if subscriptionModel.isEmpty {
+//                        subscName = "NoName"
+//                    } else {
+//                        subscName = subscriptionModel.last?.subscName ?? "取得失敗"
+//                    }
+                    if let specificItem = subscriptionModel.first(where: { $0.subscName == subscName }) {
+                        subscName = specificItem.subscName
+                    } else {
+                        subscName = ""
+                    }
+
+                }
         }
         .padding(.horizontal)
         .padding(.vertical)
