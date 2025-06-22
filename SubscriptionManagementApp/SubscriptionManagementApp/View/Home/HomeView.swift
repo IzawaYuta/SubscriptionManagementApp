@@ -18,22 +18,22 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-//                HStack {
-//                    TextField("name", text: $subscName)
-                    Button(action: {
-                        showAddSubscView.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                    }
-                    .sheet(isPresented: $showAddSubscView) {
-                        AddSubscView(
-                            subscName: $subscName,
-                            addSubscription: {
-                                addSubscription()
-                                showAddSubscView = false
-                            })
-                    }
-//                }
+                //                HStack {
+                //                    TextField("name", text: $subscName)
+                Button(action: {
+                    showAddSubscView.toggle()
+                }) {
+                    Image(systemName: "plus")
+                }
+                .sheet(isPresented: $showAddSubscView) {
+                    AddSubscView(
+                        subscName: $subscName,
+                        addSubscription: {
+                            addSubscription()
+                            showAddSubscView = false
+                        })
+                }
+                //                }
                 .padding(.horizontal)
                 
                 List {
@@ -57,10 +57,18 @@ struct HomeView: View {
     
     private func addSubscription() {
         let realm = try! Realm()
-        try! realm.write {
-            let model = SubscriptionModel()
-            model.subscName = subscName
-            realm.add(model)
+        if let existing = subscriptionModel.first(where: { $0.subscName == subscName }) {
+            // 上書き: 既存のsubscNameがあれば更新
+            try! realm.write {
+                existing.subscName = subscName
+            }
+        } else {
+            // 新規作成: なければ新規追加
+            try! realm.write {
+                let model = SubscriptionModel()
+                model.subscName = subscName
+                realm.add(model)
+            }
         }
         subscName = ""
     }
