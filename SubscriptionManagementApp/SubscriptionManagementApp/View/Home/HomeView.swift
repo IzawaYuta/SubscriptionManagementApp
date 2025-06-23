@@ -17,6 +17,7 @@ struct HomeView: View {
     
     @State private var subscName: String = ""
     @State private var amount: Int? = nil
+    @State private var paymentDate: Date?
     @State private var showAddSubscView = false
     @State private var editSubscriptionModel: SubscriptionModel?
     
@@ -25,7 +26,7 @@ struct HomeView: View {
             VStack {
                 Button(action: {
                     self.editSubscriptionModel = nil
-                    self.subscName = ""
+//                    self.subscName = ""
                     self.showAddSubscView = true
                 }) {
                     Image(systemName: "plus")
@@ -38,6 +39,7 @@ struct HomeView: View {
                             self.editSubscriptionModel = list
                             self.subscName = list.subscName
                             self.amount = list.amount
+                            self.paymentDate = list.paymentDate
                             self.showAddSubscView = true
                         }) {
                             HStack {
@@ -57,7 +59,7 @@ struct HomeView: View {
             .sheet(isPresented: $showAddSubscView) {
                 AddSubscView(
                     itemToEdit: self.editSubscriptionModel,
-                    subscName: self.$subscName, amount: self.$amount,
+                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate,
                     addSubscription: {
                         self.addSubscription()
                         self.showAddSubscView = false
@@ -76,6 +78,7 @@ struct HomeView: View {
             try! realm.write {
                 thawedModel.subscName = self.subscName
                 thawedModel.amount = self.amount
+                thawedModel.paymentDate = self.paymentDate
             }
         }
         else {
@@ -83,6 +86,7 @@ struct HomeView: View {
                 let model = SubscriptionModel()
                 model.subscName = self.subscName
                 model.amount = self.amount
+                model.paymentDate = self.paymentDate
                 try! realm.write {
                     realm.add(model)
                 }
@@ -90,6 +94,7 @@ struct HomeView: View {
         }
         self.subscName = ""
         self.amount = nil
+        self.paymentDate = nil
         self.editSubscriptionModel = nil
     }
 }
