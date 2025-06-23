@@ -11,4 +11,5 @@ import RealmSwift
 class SubscriptionModel: Object, Identifiable {
     @Persisted(primaryKey: true) var id: String = UUID().uuidString // 一意の識別子
     @Persisted var subscName: String
+    @Persisted var amount: Int
 }

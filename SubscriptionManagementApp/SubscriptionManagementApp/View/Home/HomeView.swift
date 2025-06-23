@@ -16,6 +16,7 @@ struct HomeView: View {
     @ObservedResults(SubscriptionModel.self) var subscriptionModel
     
     @State private var subscName: String = ""
+    @State private var amount: Int = 0
     @State private var showAddSubscView = false
     @State private var editSubscriptionModel: SubscriptionModel?
     
@@ -35,7 +36,8 @@ struct HomeView: View {
                     ForEach(subscriptionModel) { list in
                         Button(action: {
                             self.editSubscriptionModel = list
-//                            self.subscName = list.subscName 
+                            self.subscName = list.subscName
+                            self.amount = list.amount
                             self.showAddSubscView = true
                         }) {
                             HStack {
@@ -55,7 +57,7 @@ struct HomeView: View {
             .sheet(isPresented: $showAddSubscView) {
                 AddSubscView(
                     itemToEdit: self.editSubscriptionModel,
-                    subscName: self.$subscName,
+                    subscName: self.$subscName, amount: self.$amount,
                     addSubscription: {
                         self.addSubscription()
                         self.showAddSubscView = false
@@ -73,18 +75,21 @@ struct HomeView: View {
             
             try! realm.write {
                 thawedModel.subscName = self.subscName
+                thawedModel.amount = self.amount
             }
         }
         else {
             if !self.subscName.trimmingCharacters(in: .whitespaces).isEmpty {
                 let model = SubscriptionModel()
                 model.subscName = self.subscName
+                model.amount = self.amount
                 try! realm.write {
                     realm.add(model)
                 }
             }
         }
         self.subscName = ""
+        self.amount = 0
         self.editSubscriptionModel = nil
     }
 }

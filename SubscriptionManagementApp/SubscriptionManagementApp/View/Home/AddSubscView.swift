@@ -13,6 +13,7 @@ struct AddSubscView: View {
     var itemToEdit: SubscriptionModel?
     
     @Binding var subscName: String
+    @Binding var amount: Int
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss
@@ -22,10 +23,14 @@ struct AddSubscView: View {
             VStack(spacing: 20) {
                 TextField("サブスクリプション名", text: $subscName)
                     .textFieldStyle(.roundedBorder)
-                    .padding()
                 
+                TextField("金額", value: $amount, formatter: NumberFormatter())
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
                 Spacer()
             }
+            .padding(.horizontal)
+            .padding(.vertical)
             .navigationTitle(itemToEdit == nil ? "新規追加" : "編集")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
@@ -51,5 +56,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), addSubscription: {})
 }
