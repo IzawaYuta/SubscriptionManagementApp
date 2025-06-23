@@ -14,6 +14,7 @@ import RealmSwift
 struct HomeView: View {
     
     @ObservedResults(SubscriptionModel.self) var subscriptionModel
+    @State private var editSubscriptionModel: SubscriptionModel?
     
     @State private var subscName: String = ""
     @State private var amount: Int? = nil
@@ -23,11 +24,17 @@ struct HomeView: View {
     @State private var memo: String?
     @State private var startDate: Date?
     @State private var showAddSubscView = false
-    @State private var editSubscriptionModel: SubscriptionModel?
     
     var body: some View {
         NavigationStack {
             VStack {
+                HStack {
+                    Text("合計: ")
+                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                        .fontWeight(.bold)
+                }
+                .padding(.top)
+                
                 Button(action: {
                     self.editSubscriptionModel = nil
                     self.subscName = ""
