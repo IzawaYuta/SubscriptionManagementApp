@@ -19,6 +19,7 @@ struct HomeView: View {
     @State private var amount: Int? = nil
     @State private var paymentDate: Date?
     @State private var cancelDate: Date?
+    @State private var frequency: FrequencyPicker = .yearly
     @State private var showAddSubscView = false
     @State private var editSubscriptionModel: SubscriptionModel?
     
@@ -31,6 +32,7 @@ struct HomeView: View {
                     self.amount = nil
                     self.paymentDate = nil
                     self.cancelDate = nil
+                    self.frequency = .yearly
                     self.showAddSubscView = true
                 }) {
                     Image(systemName: "plus")
@@ -45,6 +47,7 @@ struct HomeView: View {
                             self.amount = list.amount
                             self.paymentDate = list.paymentDate
                             self.cancelDate = list.cancelDate
+                            self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
                             self.showAddSubscView = true
                         }) {
                             HStack {
@@ -64,7 +67,7 @@ struct HomeView: View {
             .sheet(isPresented: $showAddSubscView) {
                 AddSubscView(
                     itemToEdit: self.editSubscriptionModel,
-                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate,
+                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency,
                     addSubscription: {
                         self.addSubscription()
                         self.showAddSubscView = false
@@ -85,6 +88,7 @@ struct HomeView: View {
                 thawedModel.amount = self.amount
                 thawedModel.paymentDate = self.paymentDate
                 thawedModel.cancelDate = self.cancelDate
+                thawedModel.frequency = self.frequency.rawValue
             }
         }
         else {
@@ -94,6 +98,7 @@ struct HomeView: View {
                 model.amount = self.amount
                 model.paymentDate = self.paymentDate
                 model.cancelDate = self.cancelDate
+                model.frequency = self.frequency.rawValue
                 try! realm.write {
                     realm.add(model)
                 }
@@ -103,6 +108,7 @@ struct HomeView: View {
         self.amount = nil
         self.paymentDate = nil
         self.cancelDate = nil
+        self.frequency = .yearly
         self.editSubscriptionModel = nil
     }
 }

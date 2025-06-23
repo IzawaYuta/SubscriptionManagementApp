@@ -8,6 +8,12 @@
 import SwiftUI
 import RealmSwift
 
+enum FrequencyPicker: String, CaseIterable {
+    case yearly = "年額"
+    case monthly = "月額"
+    case oneTime = "買い切り"
+}
+
 struct AddSubscView: View {
     
     var itemToEdit: SubscriptionModel?
@@ -16,6 +22,7 @@ struct AddSubscView: View {
     @Binding var amount: Int?
     @Binding var paymentDate: Date?
     @Binding var cancelDate: Date?
+    @Binding var frequency: FrequencyPicker
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss
@@ -48,6 +55,13 @@ struct AddSubscView: View {
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
+                Picker("", selection: $frequency) {
+                    ForEach(FrequencyPicker.allCases, id: \.self) { picker in
+                        Text(picker.rawValue)
+                    }
+                }
+                .pickerStyle(.menu)
+                
                 Spacer()
             }
             .padding(.horizontal)
@@ -77,5 +91,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), addSubscription: {})
 }
