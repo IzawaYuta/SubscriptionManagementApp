@@ -13,7 +13,7 @@ struct AddSubscView: View {
     var itemToEdit: SubscriptionModel?
     
     @Binding var subscName: String
-    @Binding var amount: Int
+    @Binding var amount: Int?
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss

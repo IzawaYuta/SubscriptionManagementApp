@@ -16,7 +16,7 @@ struct HomeView: View {
     @ObservedResults(SubscriptionModel.self) var subscriptionModel
     
     @State private var subscName: String = ""
-    @State private var amount: Int = 0
+    @State private var amount: Int? = nil
     @State private var showAddSubscView = false
     @State private var editSubscriptionModel: SubscriptionModel?
     
@@ -89,7 +89,7 @@ struct HomeView: View {
             }
         }
         self.subscName = ""
-        self.amount = 0
+        self.amount = nil
         self.editSubscriptionModel = nil
     }
 }
