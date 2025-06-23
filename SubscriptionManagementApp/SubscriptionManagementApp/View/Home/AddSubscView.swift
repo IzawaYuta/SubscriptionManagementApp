@@ -15,6 +15,7 @@ struct AddSubscView: View {
     @Binding var subscName: String
     @Binding var amount: Int?
     @Binding var paymentDate: Date?
+    @Binding var cancelDate: Date?
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss
@@ -28,6 +29,7 @@ struct AddSubscView: View {
                 TextField("金額", value: $amount, formatter: NumberFormatter())
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
+                
                 DatePicker(     "Payment Date",
                                 selection: Binding(
                                     get: { paymentDate ?? Date() },
@@ -36,6 +38,16 @@ struct AddSubscView: View {
                                 displayedComponents: .date
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
+                
+                DatePicker(     "Cancel Date",
+                                selection: Binding(
+                                    get: { cancelDate ?? Date() },
+                                    set: { cancelDate = $0 }
+                                ),
+                                displayedComponents: .date
+                )
+                .environment(\.locale, Locale(identifier: "ja_JP"))
+                
                 Spacer()
             }
             .padding(.horizontal)
@@ -65,5 +77,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), addSubscription: {})
 }
