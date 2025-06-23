@@ -23,6 +23,7 @@ struct AddSubscView: View {
     @Binding var paymentDate: Date?
     @Binding var cancelDate: Date?
     @Binding var frequency: FrequencyPicker
+    @Binding var memo: String?
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss
@@ -55,12 +56,20 @@ struct AddSubscView: View {
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
-                Picker("", selection: $frequency) {
+                Picker("頻度", selection: $frequency) {
                     ForEach(FrequencyPicker.allCases, id: \.self) { picker in
                         Text(picker.rawValue)
                     }
                 }
                 .pickerStyle(.menu)
+                
+                TextEditor(
+                    text: Binding(
+                        get: { memo ?? "" },
+                        set: { memo = $0 }
+                    )
+                )
+                .border(Color.red, width: 1)
                 
                 Spacer()
             }
@@ -91,5 +100,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), addSubscription: {})
 }
