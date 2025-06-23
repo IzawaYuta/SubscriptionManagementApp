@@ -24,6 +24,7 @@ struct AddSubscView: View {
     @Binding var cancelDate: Date?
     @Binding var frequency: FrequencyPicker
     @Binding var memo: String?
+    @Binding var startDate: Date?
     var addSubscription: () -> Void
     
     @Environment(\.dismiss) var dismiss
@@ -38,7 +39,7 @@ struct AddSubscView: View {
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
                 
-                DatePicker(     "Payment Date",
+                DatePicker("Payment Date",
                                 selection: Binding(
                                     get: { paymentDate ?? Date() },
                                     set: { paymentDate = $0 }
@@ -47,7 +48,7 @@ struct AddSubscView: View {
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
-                DatePicker(     "Cancel Date",
+                DatePicker("Cancel Date",
                                 selection: Binding(
                                     get: { cancelDate ?? Date() },
                                     set: { cancelDate = $0 }
@@ -71,6 +72,15 @@ struct AddSubscView: View {
                 )
                 .border(Color.red, width: 1)
                 
+                DatePicker("Start Date",
+                                selection: Binding(
+                                    get: { startDate ?? Date() },
+                                    set: { startDate = $0 }
+                                ),
+                                displayedComponents: .date
+                )
+                .environment(\.locale, Locale(identifier: "ja_JP"))
+                
                 Spacer()
             }
             .padding(.horizontal)
@@ -84,7 +94,7 @@ struct AddSubscView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("キャンセル") {
+                    Button("キャンセル", role: .cancel) {
                         dismiss()
                     }
                 }
@@ -100,5 +110,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), startDate: .constant(Date()), addSubscription: {})
 }

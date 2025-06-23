@@ -21,6 +21,7 @@ struct HomeView: View {
     @State private var cancelDate: Date?
     @State private var frequency: FrequencyPicker = .yearly
     @State private var memo: String?
+    @State private var startDate: Date?
     @State private var showAddSubscView = false
     @State private var editSubscriptionModel: SubscriptionModel?
     
@@ -35,6 +36,7 @@ struct HomeView: View {
                     self.cancelDate = nil
                     self.frequency = .yearly
                     self.memo = nil
+                    self.startDate = nil
                     self.showAddSubscView = true
                 }) {
                     Image(systemName: "plus")
@@ -51,6 +53,7 @@ struct HomeView: View {
                             self.cancelDate = list.cancelDate
                             self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
                             self.memo = list.memo
+                            self.startDate = list.startDate
                             self.showAddSubscView = true
                         }) {
                             HStack {
@@ -70,7 +73,7 @@ struct HomeView: View {
             .sheet(isPresented: $showAddSubscView) {
                 AddSubscView(
                     itemToEdit: self.editSubscriptionModel,
-                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo,
+                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
                     addSubscription: {
                         self.addSubscription()
                         self.showAddSubscView = false
@@ -93,6 +96,7 @@ struct HomeView: View {
                 thawedModel.cancelDate = self.cancelDate
                 thawedModel.frequency = self.frequency.rawValue
                 thawedModel.memo = self.memo
+                thawedModel.startDate = self.startDate
             }
         }
         else {
@@ -104,6 +108,7 @@ struct HomeView: View {
                 model.cancelDate = self.cancelDate
                 model.frequency = self.frequency.rawValue
                 model.memo = self.memo
+                model.startDate = self.startDate
                 try! realm.write {
                     realm.add(model)
                 }
@@ -115,6 +120,7 @@ struct HomeView: View {
         self.cancelDate = nil
         self.frequency = .yearly
         self.memo = nil
+        self.startDate = nil
         self.editSubscriptionModel = nil
     }
 }
