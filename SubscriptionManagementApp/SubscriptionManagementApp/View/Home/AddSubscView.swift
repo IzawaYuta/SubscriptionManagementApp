@@ -39,21 +39,21 @@ struct AddSubscView: View {
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
                 
-                DatePicker("Payment Date",
-                                selection: Binding(
-                                    get: { paymentDate ?? Date() },
-                                    set: { paymentDate = $0 }
-                                ),
-                                displayedComponents: .date
+                DatePicker("お支払日",
+                           selection: Binding(
+                            get: { paymentDate ?? Date() },
+                            set: { paymentDate = $0 }
+                           ),
+                           displayedComponents: .date
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
-                DatePicker("Cancel Date",
-                                selection: Binding(
-                                    get: { cancelDate ?? Date() },
-                                    set: { cancelDate = $0 }
-                                ),
-                                displayedComponents: .date
+                DatePicker("解約日",
+                           selection: Binding(
+                            get: { cancelDate ?? Date() },
+                            set: { cancelDate = $0 }
+                           ),
+                           displayedComponents: .date
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
@@ -72,12 +72,12 @@ struct AddSubscView: View {
                 )
                 .border(Color.red, width: 1)
                 
-                DatePicker("Start Date",
-                                selection: Binding(
-                                    get: { startDate ?? Date() },
-                                    set: { startDate = $0 }
-                                ),
-                                displayedComponents: .date
+                DatePicker("開始日",
+                           selection: Binding(
+                            get: { startDate ?? Date() },
+                            set: { startDate = $0 }
+                           ),
+                           displayedComponents: .date
                 )
                 .environment(\.locale, Locale(identifier: "ja_JP"))
                 
