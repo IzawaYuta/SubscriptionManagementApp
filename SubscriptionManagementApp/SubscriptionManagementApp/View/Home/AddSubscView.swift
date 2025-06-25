@@ -26,6 +26,7 @@ struct AddSubscView: View {
     @Binding var memo: String?
     @Binding var startDate: Date?
     var addSubscription: () -> Void
+    var dismisCancelButton: () -> Void
     
     @Environment(\.dismiss) var dismiss
     
@@ -96,6 +97,7 @@ struct AddSubscView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("キャンセル", role: .cancel) {
                         dismiss()
+                        dismisCancelButton()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -110,5 +112,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), startDate: .constant(Date()), addSubscription: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), startDate: .constant(Date()), addSubscription: {}, dismisCancelButton: {})
 }

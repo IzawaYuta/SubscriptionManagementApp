@@ -25,67 +25,108 @@ struct HomeView: View {
     @State private var startDate: Date?
     @State private var showAddSubscView = false
     
+    @State private var tap = false
+    
     var body: some View {
         NavigationStack {
-            VStack {
-                HStack {
-                    Text("合計: ")
-                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
-                        .fontWeight(.bold)
-                }
-                .padding(.top)
-                
-                Button(action: {
-                    self.editSubscriptionModel = nil
-                    self.subscName = ""
-                    self.amount = nil
-                    self.paymentDate = nil
-                    self.cancelDate = nil
-                    self.frequency = .yearly
-                    self.memo = nil
-                    self.startDate = nil
-                    self.showAddSubscView = true
-                }) {
-                    Image(systemName: "plus")
-                }
-                .padding(.horizontal)
-                
-                List {
-                    ForEach(subscriptionModel) { list in
-                        Button(action: {
-                            self.editSubscriptionModel = list
-                            self.subscName = list.subscName
-                            self.amount = list.amount
-                            self.paymentDate = list.paymentDate
-                            self.cancelDate = list.cancelDate
-                            self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
-                            self.memo = list.memo
-                            self.startDate = list.startDate
-                            self.showAddSubscView = true
-                        }) {
+            ZStack {
+                VStack {
+                    List {
+                        Section {
+                            ForEach(subscriptionModel) { list in
+                                Button(action: {
+                                    self.editSubscriptionModel = list
+                                    self.subscName = list.subscName
+                                    self.amount = list.amount
+                                    self.paymentDate = list.paymentDate
+                                    self.cancelDate = list.cancelDate
+                                    self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
+                                    self.memo = list.memo
+                                    self.startDate = list.startDate
+                                    self.showAddSubscView = true
+                                }) {
+                                    HStack {
+                                        Text(list.subscName)
+                                            .foregroundColor(.primary)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption.weight(.bold))
+                                            .foregroundColor(.gray.opacity(0.5))
+                                    }
+                                }
+                            }
+                            .onDelete(perform: $subscriptionModel.remove)
+                        } header: {
                             HStack {
-                                Text(list.subscName)
-                                    .foregroundColor(.primary)
+                                HStack {
+                                    Text("合計: ")
+                                        .font(.system(size: 25))
+                                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                                        .font(.system(size: 25))
+                                }
+                                .padding(.top)
+                                
                                 Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundColor(.gray.opacity(0.5))
+                                
+                                
                             }
                         }
                     }
-                    .onDelete(perform: $subscriptionModel.remove)
                 }
-            }
-            .navigationTitle("サブスクリプション")
-            .sheet(isPresented: $showAddSubscView) {
-                AddSubscView(
-                    itemToEdit: self.editSubscriptionModel,
-                    subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
-                    addSubscription: {
-                        self.addSubscription()
-                        self.showAddSubscView = false
+                //                .navigationTitle("サブスクリプション")
+                .sheet(isPresented: $showAddSubscView) {
+                    AddSubscView(
+                        itemToEdit: self.editSubscriptionModel,
+                        subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
+                        addSubscription: {
+                            self.addSubscription()
+                            self.showAddSubscView = false
+                        },
+                        dismisCancelButton: { self.tap = false }
+                    )
+                }
+                GeometryReader { geometry in
+                    ZStack {
+                        ZStack {
+                            // アニメーション対象の RoundedRectangle
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(tap ? .clear : .cyan.opacity(0.5))
+                            Image(systemName: "plus")
+                        }
+                        
+                        AddSubscView(
+                            itemToEdit: self.editSubscriptionModel,
+                            subscName: self.$subscName,
+                            amount: self.$amount,
+                            paymentDate: self.$paymentDate,
+                            cancelDate: $cancelDate,
+                            frequency: $frequency,
+                            memo: $memo,
+                            startDate: $startDate,
+                            addSubscription: {
+                                self.addSubscription()
+                                self.showAddSubscView = false
+                            },
+                            dismisCancelButton: { self.tap = false}
+                        )
+                        .background(Color.white)
+                        .cornerRadius(15)
+                        .opacity(tap ? 1.0 : 0.0) // 1. if文の代わりにopacityで表示を制御
+                        .clipped()               // 2. 縮小時に中身がはみ出ないようにする
                     }
-                )
+                    .frame(width: tap ? geometry.size.width * 0.95 : 50,
+                           height: tap ? geometry.size.height * 0.97 : 50)
+                    .position(
+                        x: tap ? geometry.size.width / 2 : geometry.size.width - 50,
+                        y: tap ? geometry.size.height / 2 : 20
+                    )
+                    .animation(.spring(response: 0.5, dampingFraction: 0.7, blendDuration: 0.3), value: tap)
+                    .onTapGesture {
+                        withAnimation {
+                            tap.toggle()
+                        }
+                    }
+                }
             }
         }
     }
