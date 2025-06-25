@@ -88,9 +88,14 @@ struct HomeView: View {
                 GeometryReader { geometry in
                     ZStack {
                         ZStack {
-                            // アニメーション対象の RoundedRectangle
                             RoundedRectangle(cornerRadius: 15)
-                                .fill(tap ? .clear : .cyan.opacity(0.5))
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
                             Image(systemName: "plus")
                         }
                         
@@ -111,8 +116,8 @@ struct HomeView: View {
                         )
                         .background(Color.white)
                         .cornerRadius(15)
-                        .opacity(tap ? 1.0 : 0.0) // 1. if文の代わりにopacityで表示を制御
-                        .clipped()               // 2. 縮小時に中身がはみ出ないようにする
+                        .opacity(tap ? 1.0 : 0.0) 
+                        .clipped()
                     }
                     .frame(width: tap ? geometry.size.width * 0.95 : 50,
                            height: tap ? geometry.size.height * 0.97 : 50)

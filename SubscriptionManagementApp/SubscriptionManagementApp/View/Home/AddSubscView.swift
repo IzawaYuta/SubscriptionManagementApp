@@ -32,81 +32,87 @@ struct AddSubscView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                TextField("サブスクリプション名", text: $subscName)
-                    .textFieldStyle(.roundedBorder)
-                
-                TextField("金額", value: $amount, formatter: NumberFormatter())
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.numberPad)
-                
-                DatePicker("お支払日",
-                           selection: Binding(
-                            get: { paymentDate ?? Date() },
-                            set: { paymentDate = $0 }
-                           ),
-                           displayedComponents: .date
-                )
-                .environment(\.locale, Locale(identifier: "ja_JP"))
-                
-                DatePicker("解約日",
-                           selection: Binding(
-                            get: { cancelDate ?? Date() },
-                            set: { cancelDate = $0 }
-                           ),
-                           displayedComponents: .date
-                )
-                .environment(\.locale, Locale(identifier: "ja_JP"))
-                
-                Picker("頻度", selection: $frequency) {
-                    ForEach(FrequencyPicker.allCases, id: \.self) { picker in
-                        Text(picker.rawValue)
-                    }
-                }
-                .pickerStyle(.menu)
-                
-                TextEditor(
-                    text: Binding(
-                        get: { memo ?? "" },
-                        set: { memo = $0 }
+            ZStack {
+                VStack(spacing: 20) {
+                    TextField("サブスクリプション名", text: $subscName)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    TextField("金額", value: $amount, formatter: NumberFormatter())
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                    
+                    DatePicker("お支払日",
+                               selection: Binding(
+                                get: { paymentDate ?? Date() },
+                                set: { paymentDate = $0 }
+                               ),
+                               displayedComponents: .date
                     )
-                )
-                .border(Color.red, width: 1)
-                
-                DatePicker("開始日",
-                           selection: Binding(
-                            get: { startDate ?? Date() },
-                            set: { startDate = $0 }
-                           ),
-                           displayedComponents: .date
-                )
-                .environment(\.locale, Locale(identifier: "ja_JP"))
-                
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.vertical)
-            .navigationTitle(itemToEdit == nil ? "新規追加" : "編集")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                if let item = itemToEdit {
-                    subscName = item.subscName
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    
+                    DatePicker("解約日",
+                               selection: Binding(
+                                get: { cancelDate ?? Date() },
+                                set: { cancelDate = $0 }
+                               ),
+                               displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    
+                    Picker("頻度", selection: $frequency) {
+                        ForEach(FrequencyPicker.allCases, id: \.self) { picker in
+                            Text(picker.rawValue)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    
+                    TextEditor(
+                        text: Binding(
+                            get: { memo ?? "" },
+                            set: { memo = $0 }
+                        )
+                    )
+                    .border(Color.red, width: 1)
+                    
+                    DatePicker("開始日",
+                               selection: Binding(
+                                get: { startDate ?? Date() },
+                                set: { startDate = $0 }
+                               ),
+                               displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    
+                    Spacer()
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("キャンセル", role: .cancel) {
-                        dismiss()
-                        dismisCancelButton()
+                .padding(.horizontal)
+                .padding(.vertical)
+                .navigationTitle(itemToEdit == nil ? "新規追加" : "編集")
+                .navigationBarTitleDisplayMode(.inline)
+                .onAppear {
+                    if let item = itemToEdit {
+                        subscName = item.subscName
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
-                        addSubscription()
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("キャンセル", role: .cancel) {
+                            dismiss()
+                            dismisCancelButton()
+                        }
                     }
-                    .disabled(subscName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("保存") {
+                            addSubscription()
+                        }
+                        .disabled(subscName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
                 }
             }
+            .background(
+                LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .ignoresSafeArea()
+            )
         }
     }
 }
