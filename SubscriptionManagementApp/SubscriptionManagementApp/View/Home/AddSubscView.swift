@@ -25,6 +25,8 @@ struct AddSubscView: View {
     @Binding var frequency: FrequencyPicker
     @Binding var memo: String?
     @Binding var startDate: Date?
+    @State private var addMemo = false
+    @State private var alert = false
     var addSubscription: () -> Void
     var dismisCancelButton: () -> Void
     
@@ -66,14 +68,6 @@ struct AddSubscView: View {
                     }
                     .pickerStyle(.menu)
                     
-                    TextEditor(
-                        text: Binding(
-                            get: { memo ?? "" },
-                            set: { memo = $0 }
-                        )
-                    )
-                    .border(Color.red, width: 1)
-                    
                     DatePicker("開始日",
                                selection: Binding(
                                 get: { startDate ?? Date() },
@@ -82,6 +76,17 @@ struct AddSubscView: View {
                                displayedComponents: .date
                     )
                     .environment(\.locale, Locale(identifier: "ja_JP"))
+                    
+                    if addMemo {
+                        TextEditor(
+                            text: Binding(
+                                get: { memo ?? "" },
+                                set: { memo = $0 }
+                            )
+                        )
+                        .border(Color.red, width: 1)
+                        .frame(height: 100)
+                    }
                     
                     Spacer()
                 }
@@ -102,10 +107,17 @@ struct AddSubscView: View {
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("保存") {
-                            addSubscription()
+                        HStack {
+                            Button(action: {
+                                addMemo = true
+                            }) {
+                                Image(systemName: "plus")
+                            }
+                            Button("保存") {
+                                addSubscription()
+                            }
+                            .disabled(subscName.trimmingCharacters(in: .whitespaces).isEmpty)
                         }
-                        .disabled(subscName.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                 }
             }

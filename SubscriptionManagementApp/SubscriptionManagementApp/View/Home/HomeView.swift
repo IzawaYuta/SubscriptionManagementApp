@@ -24,6 +24,7 @@ struct HomeView: View {
     @State private var memo: String?
     @State private var startDate: Date?
     @State private var showAddSubscView = false
+    @State private var show = false
     
     @State private var tap = false
     
@@ -31,6 +32,23 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
                 VStack {
+                    Button(action: {
+                        show.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                    .sheet(isPresented: $show) {
+                        AddSubscView(
+                            itemToEdit: self.editSubscriptionModel,
+                            subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
+                            addSubscription: {
+                                self.addSubscription()
+                                self.showAddSubscView = false
+                                self.show = false
+                            },
+                            dismisCancelButton: {}
+                        )
+                    }
                     List {
                         Section {
                             ForEach(subscriptionModel) { list in
