@@ -23,7 +23,7 @@ struct AddSubscView: View {
     @Binding var paymentDate: Date?
     @Binding var cancelDate: Date?
     @Binding var frequency: FrequencyPicker
-    @Binding var memo: String?
+//    @Binding var memo: String?
     @Binding var startDate: Date?
     @State private var addMemo = false
     @State private var alert = false
@@ -36,12 +36,22 @@ struct AddSubscView: View {
         NavigationView {
             ZStack {
                 VStack(spacing: 20) {
-                    TextField("サブスクリプション名", text: $subscName)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    TextField("金額", value: $amount, formatter: NumberFormatter())
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
+                    VStack(alignment: .leading) {
+                        Text("サブスクリプション名")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        TextField("", text: $subscName)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                        
+                    HStack {
+                        Text("金額")
+                        TextField("", value: $amount, formatter: NumberFormatter())
+                            .frame(width: 120)
+                            .textFieldStyle(.roundedBorder)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                    }
                     
                     DatePicker("お支払日",
                                selection: Binding(
@@ -77,16 +87,16 @@ struct AddSubscView: View {
                     )
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                     
-                    if addMemo {
-                        TextEditor(
-                            text: Binding(
-                                get: { memo ?? "" },
-                                set: { memo = $0 }
-                            )
-                        )
-                        .border(Color.red, width: 1)
-                        .frame(height: 100)
-                    }
+//                    if addMemo {
+//                        TextEditor(
+//                            text: Binding(
+//                                get: { memo ?? "" },
+//                                set: { memo = $0 }
+//                            )
+//                        )
+//                        .border(Color.red, width: 1)
+//                        .frame(height: 100)
+//                    }
                     
                     Spacer()
                 }
@@ -108,11 +118,11 @@ struct AddSubscView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         HStack {
-                            Button(action: {
-                                addMemo = true
-                            }) {
-                                Image(systemName: "plus")
-                            }
+//                            Button(action: {
+//                                addMemo = true
+//                            }) {
+//                                Image(systemName: "plus")
+//                            }
                             Button("保存") {
                                 addSubscription()
                             }
@@ -130,5 +140,5 @@ struct AddSubscView: View {
 }
 
 #Preview {
-    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), memo: .constant("メモだよ"), startDate: .constant(Date()), addSubscription: {}, dismisCancelButton: {})
+    AddSubscView(subscName: .constant("Previewだよ"), amount: .constant(100), paymentDate: .constant(Date()), cancelDate: .constant(Date()), frequency: .constant(.yearly), startDate: .constant(Date()), addSubscription: {}, dismisCancelButton: {})
 }

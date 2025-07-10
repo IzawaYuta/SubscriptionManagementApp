@@ -21,12 +21,21 @@ struct HomeView: View {
     @State private var paymentDate: Date?
     @State private var cancelDate: Date?
     @State private var frequency: FrequencyPicker = .yearly
-    @State private var memo: String?
+    //    @State private var memo: String?
     @State private var startDate: Date?
     @State private var showAddSubscView = false
     @State private var show = false
     
     @State private var tap = false
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy/MM/dd"
+        formatter.locale = Locale(identifier: "ja_JP")
+        return formatter
+    }
     
     var body: some View {
         NavigationStack {
@@ -40,7 +49,7 @@ struct HomeView: View {
                     .sheet(isPresented: $show) {
                         AddSubscView(
                             itemToEdit: self.editSubscriptionModel,
-                            subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
+                            subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, startDate: $startDate,
                             addSubscription: {
                                 self.addSubscription()
                                 self.showAddSubscView = false
@@ -52,24 +61,50 @@ struct HomeView: View {
                     List {
                         Section {
                             ForEach(subscriptionModel) { list in
-                                Button(action: {
-                                    self.editSubscriptionModel = list
-                                    self.subscName = list.subscName
-                                    self.amount = list.amount
-                                    self.paymentDate = list.paymentDate
-                                    self.cancelDate = list.cancelDate
-                                    self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
-                                    self.memo = list.memo
-                                    self.startDate = list.startDate
-                                    self.showAddSubscView = true
-                                }) {
+                                VStack(alignment: .leading) {
+                                    Button(action: {
+                                        self.editSubscriptionModel = list
+                                        self.subscName = list.subscName
+                                        self.amount = list.amount
+                                        self.paymentDate = list.paymentDate
+                                        self.cancelDate = list.cancelDate
+                                        self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
+                                        //                                    self.memo = list.memo
+                                        self.startDate = list.startDate
+                                        self.showAddSubscView = true
+                                    }) {
+                                        HStack {
+                                            Text(list.subscName)
+                                                .foregroundColor(.primary)
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .font(.caption.weight(.bold))
+                                                .foregroundColor(.gray.opacity(0.5))
+                                        }
+                                    }
+                                    
                                     HStack {
-                                        Text(list.subscName)
-                                            .foregroundColor(.primary)
+                                        // 支払日をテキストで表示
+                                        if let paymentDate = list.paymentDate {
+                                            Text("支払日: \(dateFormatter.string(from: paymentDate))")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        } else {
+                                            Text("支払日: 未設定")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        
                                         Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .font(.caption.weight(.bold))
-                                            .foregroundColor(.gray.opacity(0.5))
+                                        
+                                        // 解約日をテキストで表示
+                                        if let cancelDate = list.cancelDate {
+                                            Text("解約日: \(dateFormatter.string(from: cancelDate))")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        } else {
+                                            Text("")
+                                        }
                                     }
                                 }
                             }
@@ -95,7 +130,7 @@ struct HomeView: View {
                 .sheet(isPresented: $showAddSubscView) {
                     AddSubscView(
                         itemToEdit: self.editSubscriptionModel,
-                        subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, memo: $memo, startDate: $startDate,
+                        subscName: self.$subscName, amount: self.$amount, paymentDate: self.$paymentDate, cancelDate: $cancelDate, frequency: $frequency, startDate: $startDate,
                         addSubscription: {
                             self.addSubscription()
                             self.showAddSubscView = false
@@ -103,53 +138,52 @@ struct HomeView: View {
                         dismisCancelButton: { self.tap = false }
                     )
                 }
-                GeometryReader { geometry in
-                    ZStack {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
-                            Image(systemName: "plus")
-                        }
-                        
-                        AddSubscView(
-                            itemToEdit: self.editSubscriptionModel,
-                            subscName: self.$subscName,
-                            amount: self.$amount,
-                            paymentDate: self.$paymentDate,
-                            cancelDate: $cancelDate,
-                            frequency: $frequency,
-                            memo: $memo,
-                            startDate: $startDate,
-                            addSubscription: {
-                                self.addSubscription()
-                                self.showAddSubscView = false
-                            },
-                            dismisCancelButton: { self.tap = false}
-                        )
-                        .background(Color.white)
-                        .cornerRadius(15)
-                        .opacity(tap ? 1.0 : 0.0) 
-                        .clipped()
-                    }
-                    .frame(width: tap ? geometry.size.width * 0.95 : 50,
-                           height: tap ? geometry.size.height * 0.97 : 50)
-                    .position(
-                        x: tap ? geometry.size.width / 2 : geometry.size.width - 50,
-                        y: tap ? geometry.size.height / 2 : 20
-                    )
-                    .animation(.spring(response: 0.5, dampingFraction: 0.7, blendDuration: 0.3), value: tap)
-                    .onTapGesture {
-                        withAnimation {
-                            tap.toggle()
-                        }
-                    }
-                }
+                //                GeometryReader { geometry in
+                //                    ZStack {
+                //                        ZStack {
+                //                            RoundedRectangle(cornerRadius: 15)
+                //                                .fill(
+                //                                    LinearGradient(
+                //                                        gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]),
+                //                                        startPoint: .topLeading,
+                //                                        endPoint: .bottomTrailing
+                //                                    )
+                //                                )
+                //                            Image(systemName: "plus")
+                //                        }
+                //
+                //                        AddSubscView(
+                //                            itemToEdit: self.editSubscriptionModel,
+                //                            subscName: self.$subscName,
+                //                            amount: self.$amount,
+                //                            paymentDate: self.$paymentDate,
+                //                            cancelDate: $cancelDate,
+                //                            frequency: $frequency,
+                //                            startDate: $startDate,
+                //                            addSubscription: {
+                //                                self.addSubscription()
+                //                                self.showAddSubscView = false
+                //                            },
+                //                            dismisCancelButton: { self.tap = false}
+                //                        )
+                //                        .background(Color.white)
+                //                        .cornerRadius(15)
+                //                        .opacity(tap ? 1.0 : 0.0)
+                //                        .clipped()
+                //                    }
+                //                    .frame(width: tap ? geometry.size.width * 0.95 : 50,
+                //                           height: tap ? geometry.size.height * 0.97 : 50)
+                //                    .position(
+                //                        x: tap ? geometry.size.width / 2 : geometry.size.width - 50,
+                //                        y: tap ? geometry.size.height / 2 : 20
+                //                    )
+                //                    .animation(.spring(response: 0.5, dampingFraction: 0.7, blendDuration: 0.3), value: tap)
+                //                    .onTapGesture {
+                //                        withAnimation {
+                //                            tap.toggle()
+                //                        }
+                //                    }
+                //                }
             }
         }
     }
@@ -166,7 +200,7 @@ struct HomeView: View {
                 thawedModel.paymentDate = self.paymentDate
                 thawedModel.cancelDate = self.cancelDate
                 thawedModel.frequency = self.frequency.rawValue
-                thawedModel.memo = self.memo
+                //                thawedModel.memo = self.memo
                 thawedModel.startDate = self.startDate
             }
         }
@@ -178,7 +212,7 @@ struct HomeView: View {
                 model.paymentDate = self.paymentDate
                 model.cancelDate = self.cancelDate
                 model.frequency = self.frequency.rawValue
-                model.memo = self.memo
+                //                model.memo = self.memo
                 model.startDate = self.startDate
                 try! realm.write {
                     realm.add(model)
@@ -190,7 +224,7 @@ struct HomeView: View {
         self.paymentDate = nil
         self.cancelDate = nil
         self.frequency = .yearly
-        self.memo = nil
+        //        self.memo = nil
         self.startDate = nil
         self.editSubscriptionModel = nil
     }
