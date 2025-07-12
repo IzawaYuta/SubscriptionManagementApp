@@ -31,6 +31,9 @@ struct AddSubscView: View {
     @Binding var frequency: FrequencyPicker
     //    @Binding var memo: String?
     @Binding var startDate: Date?
+    @State private var tempStartDate: Date = Date() // 仮の日付
+    @State private var startDateAdd = false
+    @State private var startDateView = false
     @State private var addMemo = false
     @State private var alert = false
     var addSubscription: () -> Void
@@ -120,14 +123,32 @@ struct AddSubscView: View {
                     }
                     .pickerStyle(.menu)
                     
-                    DatePicker("開始日",
-                               selection: Binding(
-                                get: { startDate ?? Date() },
-                                set: { startDate = $0 }
-                               ),
-                               displayedComponents: .date
-                    )
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    if startDateAdd == false {
+                        HStack {
+                            Text("お支払日")
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                startDateView = true
+                            }) {
+                                Text("設定する")
+                            }
+                            .sheet(isPresented: $startDateView) {
+                                startDateAddview()
+                                
+                            }
+                        }
+                    } else {
+                        DatePicker("開始日",
+                                   selection: Binding(
+                                    get: { startDate ?? Date() },
+                                    set: { startDate = $0 }
+                                   ),
+                                   displayedComponents: .date
+                        )
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                    }
                     
                     //                    if addMemo {
                     //                        TextEditor(
@@ -193,19 +214,32 @@ struct AddSubscView: View {
             .datePickerStyle(.graphical)
         }
     }
-        
-        func cancelDateAddView() -> some View {
-            VStack {
-                Button("保存") {
-                    cancelDate = tempcancelDate // 仮の日付をセット
-                    cancelDateAdd = true
-                    cancelDateView = false
-                }
-                DatePicker("", selection: $tempcancelDate,
-                           displayedComponents: .date)
-                .datePickerStyle(.graphical)
+    
+    func cancelDateAddView() -> some View {
+        VStack {
+            Button("保存") {
+                cancelDate = tempcancelDate // 仮の日付をセット
+                cancelDateAdd = true
+                cancelDateView = false
             }
+            DatePicker("", selection: $tempcancelDate,
+                       displayedComponents: .date)
+            .datePickerStyle(.graphical)
         }
+    }
+    
+    func startDateAddview() -> some View {
+        VStack {
+            Button("保存") {
+                startDate = tempStartDate // 仮の日付をセット
+                startDateAdd = true
+                startDateView = false
+            }
+            DatePicker("", selection: $tempStartDate,
+                       displayedComponents: .date)
+            .datePickerStyle(.graphical)
+        }
+    }
 }
 
 #Preview {
