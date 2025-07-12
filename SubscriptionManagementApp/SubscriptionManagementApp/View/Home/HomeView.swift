@@ -58,6 +58,10 @@ struct HomeView: View {
                             dismisCancelButton: {}
                         )
                     }
+                    
+                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                        .bold()
+                    
                     List {
                         
                         //MARK: 年額Section
@@ -145,7 +149,9 @@ struct HomeView: View {
                                 HStack {
                                     Text("合計: ")
                                         .font(.system(size: 20))
-                                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                                    
+                                    let yearlyTotal = subscriptionModel.filter { $0.frequency == "年額" }
+                                    Text("\(yearlyTotal.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
                                         .font(.system(size: 20))
                                 }
 //                                .padding(.top)
@@ -241,7 +247,9 @@ struct HomeView: View {
                                 HStack {
                                     Text("合計: ")
                                         .font(.system(size: 20))
-                                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                                    
+                                    let monthlyTotal = subscriptionModel.filter { $0.frequency == "月額" }
+                                    Text("\(monthlyTotal.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
                                         .font(.system(size: 20))
                                 }
 //                                .padding(.top)
@@ -337,7 +345,9 @@ struct HomeView: View {
                                 HStack {
                                     Text("合計: ")
                                         .font(.system(size: 20))
-                                    Text("\(subscriptionModel.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
+                                    
+                                    let oneTimeTotal = subscriptionModel.filter { $0.frequency == "買い切り" }
+                                    Text("\(oneTimeTotal.compactMap { $0.amount ?? 0 }.reduce(0, +)) 円")
                                         .font(.system(size: 20))
                                 }
 //                                .padding(.top)
