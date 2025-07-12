@@ -63,51 +63,74 @@ struct HomeView: View {
                         //MARK: 年額Section
                         Section {
                             ForEach(subscriptionModel.filter{ $0.frequency == "年額"}) { list in
-                                VStack(alignment: .leading) {
-                                    Button(action: {
-                                        self.editSubscriptionModel = list
-                                        self.subscName = list.subscName
-                                        self.amount = list.amount
-                                        self.paymentDate = list.paymentDate
-                                        self.cancelDate = list.cancelDate
-                                        self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
-                                        //                                    self.memo = list.memo
-                                        self.startDate = list.startDate
-                                        self.showAddSubscView = true
-                                    }) {
-                                        HStack {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Button(action: {
+                                            self.editSubscriptionModel = list
+                                            self.subscName = list.subscName
+                                            self.amount = list.amount
+                                            self.paymentDate = list.paymentDate
+                                            self.cancelDate = list.cancelDate
+                                            self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
+                                            //                                    self.memo = list.memo
+                                            self.startDate = list.startDate
+                                            self.showAddSubscView = true
+                                        }) {
                                             Text(list.subscName)
                                                 .foregroundColor(.primary)
-                                            Spacer()
-                                            Image(systemName: "chevron.right")
-                                                .font(.caption.weight(.bold))
-                                                .foregroundColor(.gray.opacity(0.5))
-                                        }
-                                    }
-                                    
-                                    HStack {
-                                        // 支払日をテキストで表示
-                                        if let paymentDate = list.paymentDate {
-                                            Text("支払日: \(dateFormatter.string(from: paymentDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("支払日: 未設定")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
                                         }
                                         
                                         Spacer()
+                                            .frame(height: 10)
                                         
-                                        // 解約日をテキストで表示
-                                        if let cancelDate = list.cancelDate {
-                                            Text("解約日: \(dateFormatter.string(from: cancelDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("")
+                                        VStack {
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.blue.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 支払日をテキストで表示
+                                                if let paymentDate = list.paymentDate {
+                                                    Text("支払日: \(dateFormatter.string(from: paymentDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("支払日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
+                                            
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.red.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 解約日をテキストで表示
+                                                if let cancelDate = list.cancelDate {
+                                                    Text("解約日: \(dateFormatter.string(from: cancelDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("解約日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
                                         }
                                     }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.weight(.bold))
+                                        .foregroundColor(.gray.opacity(0.5))
                                 }
                             }
                             .onDelete(perform: $subscriptionModel.remove)
@@ -136,57 +159,80 @@ struct HomeView: View {
                         //MARK: 月額Section
                         Section {
                             ForEach(subscriptionModel.filter{ $0.frequency == "月額"}) { list in
-                                VStack(alignment: .leading) {
-                                    Button(action: {
-                                        self.editSubscriptionModel = list
-                                        self.subscName = list.subscName
-                                        self.amount = list.amount
-                                        self.paymentDate = list.paymentDate
-                                        self.cancelDate = list.cancelDate
-                                        self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
-                                        //                                    self.memo = list.memo
-                                        self.startDate = list.startDate
-                                        self.showAddSubscView = true
-                                    }) {
-                                        HStack {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Button(action: {
+                                            self.editSubscriptionModel = list
+                                            self.subscName = list.subscName
+                                            self.amount = list.amount
+                                            self.paymentDate = list.paymentDate
+                                            self.cancelDate = list.cancelDate
+                                            self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
+                                            //                                    self.memo = list.memo
+                                            self.startDate = list.startDate
+                                            self.showAddSubscView = true
+                                        }) {
                                             Text(list.subscName)
                                                 .foregroundColor(.primary)
-                                            Spacer()
-                                            Image(systemName: "chevron.right")
-                                                .font(.caption.weight(.bold))
-                                                .foregroundColor(.gray.opacity(0.5))
-                                        }
-                                    }
-                                    
-                                    HStack {
-                                        // 支払日をテキストで表示
-                                        if let paymentDate = list.paymentDate {
-                                            Text("支払日: \(dateFormatter.string(from: paymentDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("支払日: 未設定")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
                                         }
                                         
                                         Spacer()
+                                            .frame(height: 10)
                                         
-                                        // 解約日をテキストで表示
-                                        if let cancelDate = list.cancelDate {
-                                            Text("解約日: \(dateFormatter.string(from: cancelDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("")
+                                        VStack {
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.blue.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 支払日をテキストで表示
+                                                if let paymentDate = list.paymentDate {
+                                                    Text("支払日: \(dateFormatter.string(from: paymentDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("支払日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
+                                            
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.red.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 解約日をテキストで表示
+                                                if let cancelDate = list.cancelDate {
+                                                    Text("解約日: \(dateFormatter.string(from: cancelDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("解約日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
                                         }
                                     }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.weight(.bold))
+                                        .foregroundColor(.gray.opacity(0.5))
                                 }
                             }
                             .onDelete(perform: $subscriptionModel.remove)
                         } header: {
                             HStack {
-                                Text("年額")
+                                Text("月額")
                                     .font(.system(size: 20))
                                     .bold()
                                 
@@ -209,57 +255,80 @@ struct HomeView: View {
                         //MARK: 買い切りSection
                         Section {
                             ForEach(subscriptionModel.filter{ $0.frequency == "買い切り"}) { list in
-                                VStack(alignment: .leading) {
-                                    Button(action: {
-                                        self.editSubscriptionModel = list
-                                        self.subscName = list.subscName
-                                        self.amount = list.amount
-                                        self.paymentDate = list.paymentDate
-                                        self.cancelDate = list.cancelDate
-                                        self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
-                                        //                                    self.memo = list.memo
-                                        self.startDate = list.startDate
-                                        self.showAddSubscView = true
-                                    }) {
-                                        HStack {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Button(action: {
+                                            self.editSubscriptionModel = list
+                                            self.subscName = list.subscName
+                                            self.amount = list.amount
+                                            self.paymentDate = list.paymentDate
+                                            self.cancelDate = list.cancelDate
+                                            self.frequency = FrequencyPicker(rawValue: list.frequency) ?? .yearly
+                                            //                                    self.memo = list.memo
+                                            self.startDate = list.startDate
+                                            self.showAddSubscView = true
+                                        }) {
                                             Text(list.subscName)
                                                 .foregroundColor(.primary)
-                                            Spacer()
-                                            Image(systemName: "chevron.right")
-                                                .font(.caption.weight(.bold))
-                                                .foregroundColor(.gray.opacity(0.5))
-                                        }
-                                    }
-                                    
-                                    HStack {
-                                        // 支払日をテキストで表示
-                                        if let paymentDate = list.paymentDate {
-                                            Text("支払日: \(dateFormatter.string(from: paymentDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("支払日: 未設定")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
                                         }
                                         
                                         Spacer()
+                                            .frame(height: 10)
                                         
-                                        // 解約日をテキストで表示
-                                        if let cancelDate = list.cancelDate {
-                                            Text("解約日: \(dateFormatter.string(from: cancelDate))")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        } else {
-                                            Text("")
+                                        VStack {
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.blue.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 支払日をテキストで表示
+                                                if let paymentDate = list.paymentDate {
+                                                    Text("支払日: \(dateFormatter.string(from: paymentDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("支払日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
+                                            
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.red.opacity(0.7))
+                                                    .frame(width: 10, height: 10)
+                                                
+                                                Spacer()
+                                                    .frame(width: 5)
+                                                
+                                                // 解約日をテキストで表示
+                                                if let cancelDate = list.cancelDate {
+                                                    Text("解約日: \(dateFormatter.string(from: cancelDate))")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                } else {
+                                                    Text("解約日: 未設定")
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                            }
                                         }
                                     }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.weight(.bold))
+                                        .foregroundColor(.gray.opacity(0.5))
                                 }
                             }
                             .onDelete(perform: $subscriptionModel.remove)
                         } header: {
                             HStack {
-                                Text("年額")
+                                Text("買い切り")
                                     .font(.system(size: 20))
                                     .bold()
                                 
