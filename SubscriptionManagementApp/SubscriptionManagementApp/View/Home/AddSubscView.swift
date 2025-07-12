@@ -25,7 +25,7 @@ struct AddSubscView: View {
     @State private var add = false
     @State private var paymentDateView = false
     @Binding var cancelDate: Date?
-    @State private var tempcancelDate: Date = Date() // 仮の日付
+    @State private var tempCancelDate: Date = Date() // 仮の日付
     @State private var cancelDateAdd = false
     @State private var cancelDateView = false
     @Binding var frequency: FrequencyPicker
@@ -75,7 +75,8 @@ struct AddSubscView: View {
                             }
                             .sheet(isPresented: $paymentDateView) {
                                 paymentDateAddView()
-                                
+                                    .presentationDetents([.height(430)])
+                                    .interactiveDismissDisabled(true) //閉じるを無効化
                             }
                         }
                     } else {
@@ -102,7 +103,8 @@ struct AddSubscView: View {
                             }
                             .sheet(isPresented: $cancelDateView) {
                                 cancelDateAddView()
-                                
+                                    .presentationDetents([.height(430)])
+                                    .interactiveDismissDisabled(true) //閉じるを無効化
                             }
                         }
                     } else {
@@ -135,8 +137,9 @@ struct AddSubscView: View {
                                 Text("設定する")
                             }
                             .sheet(isPresented: $startDateView) {
-                                startDateAddview()
-                                
+                                startDateAddView()
+                                    .presentationDetents([.height(430)])
+                                    .interactiveDismissDisabled(true) //閉じるを無効化
                             }
                         }
                     } else {
@@ -218,17 +221,17 @@ struct AddSubscView: View {
     func cancelDateAddView() -> some View {
         VStack {
             Button("保存") {
-                cancelDate = tempcancelDate // 仮の日付をセット
+                cancelDate = tempCancelDate // 仮の日付をセット
                 cancelDateAdd = true
                 cancelDateView = false
             }
-            DatePicker("", selection: $tempcancelDate,
+            DatePicker("", selection: $tempCancelDate,
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
         }
     }
     
-    func startDateAddview() -> some View {
+    func startDateAddView() -> some View {
         VStack {
             Button("保存") {
                 startDate = tempStartDate // 仮の日付をセット
@@ -239,6 +242,8 @@ struct AddSubscView: View {
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
         }
+        .padding(.vertical)
+        .padding(.horizontal)
     }
 }
 
