@@ -25,6 +25,9 @@ struct AddSubscView: View {
     @State private var add = false
     @State private var paymentDateView = false
     @Binding var cancelDate: Date?
+    @State private var tempcancelDate: Date = Date() // 仮の日付
+    @State private var cancelDateAdd = false
+    @State private var cancelDateView = false
     @Binding var frequency: FrequencyPicker
     //    @Binding var memo: String?
     @Binding var startDate: Date?
@@ -83,14 +86,32 @@ struct AddSubscView: View {
                         .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
                     
-                    DatePicker("解約日",
-                               selection: Binding(
-                                get: { cancelDate ?? Date() },
-                                set: { cancelDate = $0 }
-                               ),
-                               displayedComponents: .date
-                    )
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    if cancelDateAdd == false {
+                        HStack {
+                            Text("解約日")
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                cancelDateView = true
+                            }) {
+                                Text("設定する")
+                            }
+                            .sheet(isPresented: $cancelDateView) {
+                                cancelDateAddView()
+                                
+                            }
+                        }
+                    } else {
+                        DatePicker("解約日",
+                                   selection: Binding(
+                                    get: { cancelDate ?? Date() },
+                                    set: { cancelDate = $0 }
+                                   ),
+                                   displayedComponents: .date
+                        )
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                    }
                     
                     Picker("頻度", selection: $frequency) {
                         ForEach(FrequencyPicker.allCases, id: \.self) { picker in
@@ -172,6 +193,19 @@ struct AddSubscView: View {
             .datePickerStyle(.graphical)
         }
     }
+        
+        func cancelDateAddView() -> some View {
+            VStack {
+                Button("保存") {
+                    cancelDate = tempcancelDate // 仮の日付をセット
+                    cancelDateAdd = true
+                    cancelDateView = false
+                }
+                DatePicker("", selection: $tempcancelDate,
+                           displayedComponents: .date)
+                .datePickerStyle(.graphical)
+            }
+        }
 }
 
 #Preview {
