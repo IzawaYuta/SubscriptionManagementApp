@@ -21,9 +21,12 @@ struct AddSubscView: View {
     @Binding var subscName: String
     @Binding var amount: Int?
     @Binding var paymentDate: Date?
+    @State private var tempPaymentDate: Date = Date() // 仮の日付
+    @State private var add = false
+    @State private var paymentDateView = false
     @Binding var cancelDate: Date?
     @Binding var frequency: FrequencyPicker
-//    @Binding var memo: String?
+    //    @Binding var memo: String?
     @Binding var startDate: Date?
     @State private var addMemo = false
     @State private var alert = false
@@ -43,7 +46,7 @@ struct AddSubscView: View {
                         TextField("", text: $subscName)
                             .textFieldStyle(.roundedBorder)
                     }
-                        
+                    
                     HStack {
                         Text("金額")
                         TextField("", value: $amount, formatter: NumberFormatter())
@@ -53,14 +56,32 @@ struct AddSubscView: View {
                             .multilineTextAlignment(.center)
                     }
                     
-                    DatePicker("お支払日",
-                               selection: Binding(
-                                get: { paymentDate ?? Date() },
-                                set: { paymentDate = $0 }
-                               ),
-                               displayedComponents: .date
-                    )
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    if add == false {
+                        HStack {
+                            Text("お支払日")
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                paymentDateView = true
+                            }) {
+                                Text("設定する")
+                            }
+                            .sheet(isPresented: $paymentDateView) {
+                                paymentDateAddView()
+                                
+                            }
+                        }
+                    } else {
+                        DatePicker("お支払日",
+                                   selection: Binding(
+                                    get: { paymentDate ?? Date() },
+                                    set: { paymentDate = $0 }
+                                   ),
+                                   displayedComponents: .date
+                        )
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                    }
                     
                     DatePicker("解約日",
                                selection: Binding(
@@ -87,16 +108,16 @@ struct AddSubscView: View {
                     )
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                     
-//                    if addMemo {
-//                        TextEditor(
-//                            text: Binding(
-//                                get: { memo ?? "" },
-//                                set: { memo = $0 }
-//                            )
-//                        )
-//                        .border(Color.red, width: 1)
-//                        .frame(height: 100)
-//                    }
+                    //                    if addMemo {
+                    //                        TextEditor(
+                    //                            text: Binding(
+                    //                                get: { memo ?? "" },
+                    //                                set: { memo = $0 }
+                    //                            )
+                    //                        )
+                    //                        .border(Color.red, width: 1)
+                    //                        .frame(height: 100)
+                    //                    }
                     
                     Spacer()
                 }
@@ -118,11 +139,11 @@ struct AddSubscView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         HStack {
-//                            Button(action: {
-//                                addMemo = true
-//                            }) {
-//                                Image(systemName: "plus")
-//                            }
+                            //                            Button(action: {
+                            //                                addMemo = true
+                            //                            }) {
+                            //                                Image(systemName: "plus")
+                            //                            }
                             Button("保存") {
                                 addSubscription()
                             }
@@ -135,6 +156,20 @@ struct AddSubscView: View {
                 LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
             )
+        }
+    }
+    
+    func paymentDateAddView() -> some View {
+        VStack {
+            Button("保存") {
+                paymentDate = tempPaymentDate // 仮の日付をセット
+                add = true
+                paymentDateView = false
+            }
+            
+            DatePicker("", selection: $tempPaymentDate,
+                       displayedComponents: .date)
+            .datePickerStyle(.graphical)
         }
     }
 }
