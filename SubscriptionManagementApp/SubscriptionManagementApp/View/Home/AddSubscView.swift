@@ -14,6 +14,11 @@ enum FrequencyPicker: String, CaseIterable {
     case oneTime = "買い切り"
 }
 
+enum PaymentPicker: String, CaseIterable {
+    case monthlyPayment = "毎月"
+    case yearlyPayment = "毎年"
+}
+
 struct AddSubscView: View {
     
     var itemToEdit: SubscriptionModel?
@@ -62,61 +67,79 @@ struct AddSubscView: View {
                             .multilineTextAlignment(.center)
                     }
                     
-                    if add == false {
-                        HStack {
-                            Text("お支払日")
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                paymentDateView = true
-                            }) {
-                                Text("設定する")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.white)
+                            .shadow(color: .black, radius: 1.5)
+                        if add == false {
+                            HStack {
+                                Text("お支払日")
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    paymentDateView = true
+                                }) {
+                                    Text("設定する")
+                                }
+                                .sheet(isPresented: $paymentDateView) {
+                                    paymentDateAddView()
+                                        .presentationDetents([.height(430)])
+                                        .interactiveDismissDisabled(true) //閉じるを無効化
+                                }
                             }
-                            .sheet(isPresented: $paymentDateView) {
-                                paymentDateAddView()
-                                    .presentationDetents([.height(430)])
-                                    .interactiveDismissDisabled(true) //閉じるを無効化
-                            }
+                            .padding(.horizontal)
+                        } else {
+                            DatePicker("お支払日",
+                                       selection: Binding(
+                                        get: { paymentDate ?? Date() },
+                                        set: { paymentDate = $0 }
+                                       ),
+                                       displayedComponents: .date
+                            )
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            .padding(.horizontal)
                         }
-                    } else {
-                        DatePicker("お支払日",
-                                   selection: Binding(
-                                    get: { paymentDate ?? Date() },
-                                    set: { paymentDate = $0 }
-                                   ),
-                                   displayedComponents: .date
-                        )
-                        .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
                     
-                    if cancelDateAdd == false {
-                        HStack {
-                            Text("解約日")
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                cancelDateView = true
-                            }) {
-                                Text("設定する")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.white)
+                            .shadow(color: .black, radius: 1.5)
+                        if cancelDateAdd == false {
+                            HStack {
+                                Text("解約日")
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    cancelDateView = true
+                                }) {
+                                    Text("設定する")
+                                }
+                                .sheet(isPresented: $cancelDateView) {
+                                    cancelDateAddView()
+                                        .presentationDetents([.height(430)])
+                                        .interactiveDismissDisabled(true) //閉じるを無効化
+                                }
                             }
-                            .sheet(isPresented: $cancelDateView) {
-                                cancelDateAddView()
-                                    .presentationDetents([.height(430)])
-                                    .interactiveDismissDisabled(true) //閉じるを無効化
-                            }
+                            .padding(.horizontal)
+                        } else {
+                            DatePicker("解約日",
+                                       selection: Binding(
+                                        get: { cancelDate ?? Date() },
+                                        set: { cancelDate = $0 }
+                                       ),
+                                       displayedComponents: .date
+                            )
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            .padding(.horizontal)
                         }
-                    } else {
-                        DatePicker("解約日",
-                                   selection: Binding(
-                                    get: { cancelDate ?? Date() },
-                                    set: { cancelDate = $0 }
-                                   ),
-                                   displayedComponents: .date
-                        )
-                        .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
                     
                     Picker("頻度", selection: $frequency) {
                         ForEach(FrequencyPicker.allCases, id: \.self) { picker in
@@ -125,33 +148,42 @@ struct AddSubscView: View {
                     }
                     .pickerStyle(.menu)
                     
-                    if startDateAdd == false {
-                        HStack {
-                            Text("お支払日")
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                startDateView = true
-                            }) {
-                                Text("設定する")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.white)
+                            .shadow(color: .black, radius: 1.5)
+                        if startDateAdd == false {
+                            HStack {
+                                Text("開始日")
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    startDateView = true
+                                }) {
+                                    Text("設定する")
+                                }
+                                .sheet(isPresented: $startDateView) {
+                                    startDateAddView()
+                                        .presentationDetents([.height(430)])
+                                        .interactiveDismissDisabled(true) //閉じるを無効化
+                                }
                             }
-                            .sheet(isPresented: $startDateView) {
-                                startDateAddView()
-                                    .presentationDetents([.height(430)])
-                                    .interactiveDismissDisabled(true) //閉じるを無効化
-                            }
+                            .padding(.horizontal)
+                        } else {
+                            DatePicker("開始日",
+                                       selection: Binding(
+                                        get: { startDate ?? Date() },
+                                        set: { startDate = $0 }
+                                       ),
+                                       displayedComponents: .date
+                            )
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            .padding(.horizontal)
                         }
-                    } else {
-                        DatePicker("開始日",
-                                   selection: Binding(
-                                    get: { startDate ?? Date() },
-                                    set: { startDate = $0 }
-                                   ),
-                                   displayedComponents: .date
-                        )
-                        .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
                     
                     //                    if addMemo {
                     //                        TextEditor(
@@ -198,18 +230,24 @@ struct AddSubscView: View {
                 }
             }
             .background(
-                LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
+//                LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
+//                    .ignoresSafeArea()
+                Color.colorBack
             )
         }
     }
     
     func paymentDateAddView() -> some View {
         VStack {
-            Button("保存") {
-                paymentDate = tempPaymentDate // 仮の日付をセット
-                add = true
-                paymentDateView = false
+            HStack {
+                Button("キャンセル", role: .cancel) {
+                    paymentDateView = false 
+                }
+                Button("保存") {
+                    paymentDate = tempPaymentDate // 仮の日付をセット
+                    add = true
+                    paymentDateView = false
+                }
             }
             
             DatePicker("", selection: $tempPaymentDate,
@@ -220,11 +258,17 @@ struct AddSubscView: View {
     
     func cancelDateAddView() -> some View {
         VStack {
-            Button("保存") {
-                cancelDate = tempCancelDate // 仮の日付をセット
-                cancelDateAdd = true
-                cancelDateView = false
+            HStack {
+                Button("キャンセル", role: .cancel) {
+                    cancelDateView = false
+                }
+                Button("保存") {
+                    cancelDate = tempCancelDate // 仮の日付をセット
+                    cancelDateAdd = true
+                    cancelDateView = false
+                }
             }
+            
             DatePicker("", selection: $tempCancelDate,
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
@@ -233,10 +277,15 @@ struct AddSubscView: View {
     
     func startDateAddView() -> some View {
         VStack {
-            Button("保存") {
-                startDate = tempStartDate // 仮の日付をセット
-                startDateAdd = true
-                startDateView = false
+            HStack {
+                Button("キャンセル", role: .cancel) {
+                    startDateView = false
+                }
+                Button("保存") {
+                    startDate = tempStartDate // 仮の日付をセット
+                    startDateAdd = true
+                    startDateView = false
+                }
             }
             DatePicker("", selection: $tempStartDate,
                        displayedComponents: .date)
