@@ -87,7 +87,7 @@ struct HomeView: View {
                                         Spacer()
                                             .frame(height: 10)
                                         
-                                        VStack {
+                                        VStack(alignment: .leading) {
                                             HStack {
                                                 Circle()
                                                     .fill(Color.blue.opacity(0.7))
@@ -185,7 +185,7 @@ struct HomeView: View {
                                         Spacer()
                                             .frame(height: 10)
                                         
-                                        VStack {
+                                        VStack(alignment: .leading) {
                                             HStack {
                                                 Circle()
                                                     .fill(Color.blue.opacity(0.7))
@@ -283,7 +283,7 @@ struct HomeView: View {
                                         Spacer()
                                             .frame(height: 10)
                                         
-                                        VStack {
+                                        VStack(alignment: .leading) {
                                             HStack {
                                                 Circle()
                                                     .fill(Color.blue.opacity(0.7))
