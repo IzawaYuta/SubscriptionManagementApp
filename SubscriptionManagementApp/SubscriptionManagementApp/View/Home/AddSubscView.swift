@@ -111,9 +111,7 @@ struct AddSubscView: View {
                         if cancelDateAdd == false {
                             HStack {
                                 Text("解約日")
-                                
                                 Spacer()
-                                
                                 Button(action: {
                                     cancelDateView = true
                                 }) {
@@ -127,14 +125,23 @@ struct AddSubscView: View {
                             }
                             .padding(.horizontal)
                         } else {
-                            DatePicker("解約日",
-                                       selection: Binding(
-                                        get: { cancelDate ?? Date() },
-                                        set: { cancelDate = $0 }
-                                       ),
-                                       displayedComponents: .date
-                            )
-                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            HStack {
+                                Text("解約日")
+                                Spacer()
+                                Button(action: {
+                                    cancelDateView = true
+                                }) {
+//                                    let date = itemToEdit?.cancelDate
+//                                    Text(date ?? <#default value#>, style: .date)
+//                                        .foregroundColor(.black)
+//                                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                                }
+                                .sheet(isPresented: $cancelDateView) {
+                                    cancelDateAddView()
+                                        .presentationDetents([.height(430)])
+                                        .interactiveDismissDisabled(true) //閉じるを無効化
+                                }
+                            }
                             .padding(.horizontal)
                         }
                     }
@@ -230,8 +237,8 @@ struct AddSubscView: View {
                 }
             }
             .background(
-//                LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-//                    .ignoresSafeArea()
+                //                LinearGradient(gradient: Gradient(colors: [.cyan.opacity(0.3), .green.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                //                    .ignoresSafeArea()
                 Color.colorBack
             )
         }
@@ -241,7 +248,7 @@ struct AddSubscView: View {
         VStack {
             HStack {
                 Button("キャンセル", role: .cancel) {
-                    paymentDateView = false 
+                    paymentDateView = false
                 }
                 Button("保存") {
                     paymentDate = tempPaymentDate // 仮の日付をセット
@@ -253,6 +260,7 @@ struct AddSubscView: View {
             DatePicker("", selection: $tempPaymentDate,
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
+            .environment(\.locale, Locale(identifier: "ja_JP"))
         }
     }
     
@@ -272,6 +280,7 @@ struct AddSubscView: View {
             DatePicker("", selection: $tempCancelDate,
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
+            .environment(\.locale, Locale(identifier: "ja_JP"))
         }
     }
     
@@ -290,6 +299,7 @@ struct AddSubscView: View {
             DatePicker("", selection: $tempStartDate,
                        displayedComponents: .date)
             .datePickerStyle(.graphical)
+            .environment(\.locale, Locale(identifier: "ja_JP"))
         }
         .padding(.vertical)
         .padding(.horizontal)
